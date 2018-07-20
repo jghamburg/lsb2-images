@@ -18,9 +18,9 @@ package com.greglturnquist.learningspringboot;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.HttpSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.context.WebSessionSecurityContextRepository;
+import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 
 /**
  * @author Greg Turnquist
@@ -30,15 +30,14 @@ import org.springframework.security.web.server.context.WebSessionSecurityContext
 @EnableReactiveMethodSecurity
 public class SecurityConfiguration {
 
-	@Bean
-	SecurityWebFilterChain springWebFilterChain() {
-		return HttpSecurity.http()
-			.securityContextRepository(
-				new WebSessionSecurityContextRepository())
-			.authorizeExchange()
-				.anyExchange().authenticated()
-				.and()
-			.build();
-	}
-}
-// end::code[]
+  @Bean
+  SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) {
+    return http
+        .securityContextRepository(new WebSessionServerSecurityContextRepository())
+        .authorizeExchange()
+        .anyExchange().authenticated()
+        .and()
+        .csrf().disable()
+        .build();
+  }
+}// end::code[]

@@ -45,7 +45,7 @@ public class SecurityExpressionObjectFactory
 	public Set<String> getAllExpressionObjectNames() {
 		return Collections.unmodifiableSet(
 			new HashSet<>(Arrays.asList(
-			"authorization"
+					"authorization"
 		)));
 	}
 	

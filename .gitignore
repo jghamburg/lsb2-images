@@ -1,3 +1,5 @@
 .gradle
 upload-dir/
-
+out
+.idea
+*.iml

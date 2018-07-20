@@ -38,9 +38,7 @@ public class InitDatabase {
 			operations.insert(new Image("3",
 				"bazinga.png", "phil"));
 
-			operations.findAll(Image.class).forEach(image -> {
-				System.out.println(image.toString());
-			});
+			operations.findAll(Image.class).forEach(image -> System.out.println(image.toString()));
 			// end::log[]
 		};
 	}
