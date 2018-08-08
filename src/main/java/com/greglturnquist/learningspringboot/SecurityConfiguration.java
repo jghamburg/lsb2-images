@@ -35,6 +35,7 @@ public class SecurityConfiguration {
     return http
         .securityContextRepository(new WebSessionServerSecurityContextRepository())
         .authorizeExchange()
+        .pathMatchers("/actuator/*").permitAll()
         .anyExchange().authenticated()
         .and()
         .csrf().disable()
