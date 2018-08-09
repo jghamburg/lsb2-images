@@ -1,5 +1,7 @@
 .gradle
-upload-dir/
-out
 .idea
 *.iml
+*.ipr
+*.iws
+.gradletasknamecache
+out
