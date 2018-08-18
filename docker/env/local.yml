@@ -15,7 +15,7 @@ services:
       - "8200:8200" # web port
     environment:
       PROFILE: "local"
-      OTTO_GROUP: "local"
+      JAVA_REMOTE_DEBUGGING: "true"
     networks:
       - learn-ms-network
 
