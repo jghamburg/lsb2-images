@@ -13,9 +13,11 @@ services:
       dockerfile: ./docker/Dockerfile
     ports:
       - "8200:8200" # web port
+      - "48200:48200" # debug port
     environment:
       PROFILE: "local"
       JAVA_REMOTE_DEBUGGING: "true"
+      DEBUG_PORT: "48200"
     networks:
       - learn-ms-network
 

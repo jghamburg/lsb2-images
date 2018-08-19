@@ -27,9 +27,10 @@ repositories {
   jcenter()
 }
 
-jar {
+bootJar {
   baseName = 'learning-spring-boot-images'
   version = '0.0.1-SNAPSHOT'
+  excludeDevtools = false
 }
 /*
  * docker-compose plugin configuration.
