@@ -1,27 +1,31 @@
 buildscript {
   ext {
-    springCloudVersion = 'Finchley.RELEASE'
-    springCloudK8sVersion = '0.2.0.RELEASE'
-    springCloudStreamVersion = 'Elmhurst.RELEASE'
-    lombokVersion = '1.18.2'
+    springCloudVersion = 'Greenwich.RELEASE'
+    lombokVersion = '1.18.4'
   }
 }
 
 plugins {
-  id 'org.springframework.boot' version '2.0.4.RELEASE' apply true
+  id 'org.springframework.boot' version '2.1.2.RELEASE' apply true
   // tag::gradle-git[]
   id 'com.gorylenko.gradle-git-properties' version '1.4.17'
   // end::gradle-git[]
   id 'idea'
   id 'java-gradle-plugin'
+  id 'io.franzbecker.gradle-lombok' version '2.0'
   id 'com.avast.gradle.docker-compose' version '0.8.4'
-  id 'com.google.cloud.tools.jib' version '0.9.8'
+  id 'com.google.cloud.tools.jib' version '1.0.0'
 }
 
 apply plugin: 'io.spring.dependency-management'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+lombok {
+  version = '1.18.4'
+  sha256 = ""
+}
 
 repositories {
   jcenter()
@@ -70,10 +74,10 @@ composeUp.dependsOn composeBuild
 
 jib {
   from {
-    image = 'docker.obc.ov.otto.de/base/openjdk:8-jre-alpine'
+    image = 'openjdk:8-jre-alpine'
   }
   to {
-    image = "docker.obc.ov.otto.de/jib/lsb2-images:local"
+    image = "jghamburg/lsb2-images:local"
 //    credHelper = 'osxkeychain'
   }
   container {
@@ -116,6 +120,5 @@ dependencies {
 dependencyManagement {
   imports {
     mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    mavenBom "org.springframework.cloud:spring-cloud-stream-dependencies:${springCloudStreamVersion}"
   }
 }
