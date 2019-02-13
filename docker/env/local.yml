@@ -11,6 +11,8 @@ services:
     build:
       context: ../..
       dockerfile: ./docker/Dockerfile
+      args:
+        JAR_FILE: ./build/libs/lsb2-images.jar
     ports:
       - "8200:8200" # web port
       - "48200:48200" # debug port
