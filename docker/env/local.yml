@@ -20,6 +20,8 @@ services:
       PROFILE: "local"
       JAVA_REMOTE_DEBUGGING: "true"
       DEBUG_PORT: "48200"
+    volumes:
+      - ../../upload-dir:/app/upload-dir
     networks:
       - learn-ms-network
 

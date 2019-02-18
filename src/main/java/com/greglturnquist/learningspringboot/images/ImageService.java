@@ -42,7 +42,7 @@ import org.springframework.util.FileSystemUtils;
 @Service
 public class ImageService {
 
-	private static String UPLOAD_ROOT = "upload-dir";
+	public static String UPLOAD_ROOT = "upload-dir";
 
 	private final ResourceLoader resourceLoader;
 	private final ImageRepository imageRepository;
@@ -146,6 +146,7 @@ public class ImageService {
 	 *
 	 * @return Spring Boot {@link CommandLineRunner} automatically run after app context is loaded.
 	 */
+/*
 	@Bean
 	CommandLineRunner setUp() throws IOException {
 		return (args) -> {
@@ -165,5 +166,6 @@ public class ImageService {
 				new FileWriter(UPLOAD_ROOT + "/bazinga.png"));
 		};
 	}
+*/
 
 }

@@ -34,11 +34,16 @@ dependencies {
   runtimeOnly 'org.springframework.boot:spring-boot-devtools'
   implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
   implementation 'org.springframework.cloud:spring-cloud-stream-reactive'
-  //compile 'org.synchronoss.cloud:nio-multipart-parser'
+  implementation 'org.synchronoss.cloud:nio-multipart-parser'
   implementation 'org.springframework.session:spring-session-data-mongodb'
   implementation 'io.micrometer:micrometer-core:1.1.2'
+  implementation 'org.seleniumhq.selenium:htmlunit-driver'
+  implementation 'org.seleniumhq.selenium:selenium-java'
 
   testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation 'io.projectreactor:reactor-test'
+  testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+  annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 dependencyManagement {

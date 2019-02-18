@@ -13,7 +13,7 @@ else
   echo "starting container, internal debug port is ,address=48200,suspend=n"
   java -Djava.security.egd=file:/dev/./urandom \
     -server -Xms${java_heap} -Xmx${java_heap} \
-    -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=48200,suspend=n \
+    -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=${debug_port},suspend=n \
     -Dspring.profiles.active=${profile} -jar /app/app.jar
 fi
 # The End
