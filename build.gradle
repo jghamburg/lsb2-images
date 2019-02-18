@@ -12,6 +12,7 @@ plugins {
 ext {
   set('springCloudVersion', 'Greenwich.RELEASE')
   set('activeSpringProfiles', 'local')
+  set('junit-plattform-version', '1.4.0')
 }
 
 group = 'com.gregturnquist.learningspringboot'
@@ -41,8 +42,13 @@ dependencies {
   implementation 'org.seleniumhq.selenium:selenium-java'
 
   testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation 'org.springframework.security:spring-security-test:5.1.4.RELEASE'
   testImplementation 'io.projectreactor:reactor-test'
   testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+  // Junit Jupiter dependencies
+  testImplementation 'org.junit.jupiter:junit-jupiter-api'
+  testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+  testImplementation "org.junit.platform:junit-platform-launcher:1.4.0"
   annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 

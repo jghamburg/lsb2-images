@@ -17,6 +17,7 @@ package com.greglturnquist.learningspringboot;
 
 import com.greglturnquist.learningspringboot.images.ImageRepository;
 import com.greglturnquist.learningspringboot.images.ImageService;
+import com.greglturnquist.learningspringboot.webdriver.WebDriverAutoConfiguration;
 import java.security.Principal;
 import java.io.File;
 import java.io.IOException;
@@ -27,11 +28,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.FileSystemUtils;
 import reactor.core.publisher.Flux;
@@ -50,7 +56,10 @@ import static org.mockito.BDDMockito.mock;
  */
 // tag::1[]
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@TestPropertySource(properties=
+		{"spring.autoconfigure.exclude=com.gregturnquist.learningspringboot.webdriver.WebDriverAutoConfiguration"})
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@ContextConfiguration
 public class ImageServiceTests {
 
 	@Autowired
@@ -86,7 +95,7 @@ public class ImageServiceTests {
 		then(images).isNotNull();
 		then(images.collectList().block())
 			.hasSize(2)
-			.extracting(Image::getId, Image::getName)
+			.extracting(Image::getId, Image::getName, Image::getOwner)
 			.contains(
 				tuple("1", "alpha.jpg", "greg"),
 				tuple("2", "bravo.jpg", "phil")
@@ -111,8 +120,8 @@ public class ImageServiceTests {
 		// given
 		Image alphaImage = new Image("1", "alpha.jpg", "greg");
 		Image bravoImage = new Image("2", "bravo.jpg", "phil");
-		given(repository.save(new Image(any(), alphaImage.getName(), any()))).willReturn(Mono.just(alphaImage));
-		given(repository.save(new Image(any(), bravoImage.getName(), any()))).willReturn(Mono.just(bravoImage));
+		given(repository.save(new Image(any(), alphaImage.getName(), alphaImage.getOwner()))).willReturn(Mono.just(alphaImage));
+		given(repository.save(new Image(any(), bravoImage.getName(), bravoImage.getOwner()))).willReturn(Mono.just(bravoImage));
 		given(repository.findAll()).willReturn(Flux.just(alphaImage, bravoImage));
 		FilePart file1 = mock(FilePart.class);
 		given(file1.filename()).willReturn(alphaImage.getName());
@@ -130,9 +139,25 @@ public class ImageServiceTests {
 	}
 
 	@Test
-	public void deleteImageShouldWork() {
+	@WithMockUser(username="admin",roles={"ADMIN"})
+	public void deleteImageWithAdminShouldWork() {
 		// given
 		String imageName = "alpha.jpg";
+		Mono<Image> image = Mono.just(new Image("1", imageName, "greg"));
+		given(repository.findByName(any())).willReturn(image);
+		given(repository.delete((Image) any())).willReturn(Mono.empty());
+
+		// when
+		Mono<Void> done = imageService.deleteImage(imageName);
+
+		// then
+		then(done.block()).isNull();
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void deleteImageWithUnauthorizedUserShouldNotWork() {
+		// given
+		String imageName = "beta.jpg";
 		Mono<Image> image = Mono.just(new Image("1", imageName, "greg"));
 		given(repository.findByName(any())).willReturn(image);
 		given(repository.delete((Image) any())).willReturn(Mono.empty());

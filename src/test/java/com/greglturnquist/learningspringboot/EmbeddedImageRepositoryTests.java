@@ -15,28 +15,27 @@
  */
 package com.greglturnquist.learningspringboot;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.greglturnquist.learningspringboot.images.Image;
 import com.greglturnquist.learningspringboot.images.ImageRepository;
 import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.test.context.junit4.SpringRunner;
-import com.greglturnquist.learningspringboot.images.*;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * @author Greg Turnquist
  */
 // tag::1[]
-@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = LearningSpringBootImagesApplication.class)
 @DataMongoTest
+@ExtendWith(SpringExtension.class)
 public class EmbeddedImageRepositoryTests {
 
 	@Autowired
