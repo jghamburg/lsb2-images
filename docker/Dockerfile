@@ -11,7 +11,7 @@ RUN adduser -D -u 1000 app && echo "app:ppa" | chpasswd
 
 COPY ./docker/run.sh /run.sh
 COPY $JAR_FILE /app/app.jar
-VOLUME /app/upload-dir
+# VOLUME /app/upload-dir
 
 RUN chmod 700 /*.sh && \
 	mkdir -p /app && chown -R app:app /app && \
