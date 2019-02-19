@@ -110,6 +110,7 @@ dockerCompose {
 }
 composeBuild.dependsOn bootJar
 composeUp.dependsOn composeBuild
+composePush.dependsOn composeBuild
 
 jib {
   from {

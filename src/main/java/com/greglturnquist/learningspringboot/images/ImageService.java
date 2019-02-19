@@ -146,7 +146,6 @@ public class ImageService {
 	 *
 	 * @return Spring Boot {@link CommandLineRunner} automatically run after app context is loaded.
 	 */
-/*
 	@Bean
 	CommandLineRunner setUp() throws IOException {
 		return (args) -> {
@@ -166,6 +165,5 @@ public class ImageService {
 				new FileWriter(UPLOAD_ROOT + "/bazinga.png"));
 		};
 	}
-*/
 
 }

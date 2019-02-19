@@ -29,6 +29,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.greglturnquist.learningspringboot.ImagesConfiguration;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
 /**
  * @author Greg Turnquist
@@ -36,33 +38,30 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 @Component
 public class CommentHelper {
 
-	private final RestTemplate restTemplate;
+
+	private final WebClient webClient;
 
 	private final ImagesConfiguration imagesConfiguration;
 
-	CommentHelper(RestTemplate restTemplate,
+	CommentHelper(WebClient webClient,
 				  ImagesConfiguration imagesConfiguration) {
-		this.restTemplate = restTemplate;
+		this.webClient = webClient;
 		this.imagesConfiguration = imagesConfiguration;
 	}
 
 	// tag::get-comments[]
-	@HystrixCommand(fallbackMethod = "defaultComments")
-	public List<Comment> getComments(Image image, String sessionId) {
+	public Flux<Comment> getComments(Image image, String sessionId) {
 
-		ResponseEntity<List<Comment>> results = restTemplate.exchange(
-			"http://COMMENTS/comments/{imageId}",
-			HttpMethod.GET,
-			new HttpEntity<>(new HttpHeaders() {{
+		return webClient.get()
+				.uri(uriBuilder -> uriBuilder.path("http://COMMENTS/comments/" + image.getId())
+						.build())
+			.headers(h -> {
 				String credentials = imagesConfiguration.getCommentsUser() + ":" +
 					imagesConfiguration.getCommentsPassword();
 				String token = new String(Base64Utils.encode(credentials.getBytes()));
-				set(AUTHORIZATION, "Basic " + token);
-				set("Cookie", "SESSION=" + sessionId);
-			}}),
-			new ParameterizedTypeReference<List<Comment>>() {},
-			image.getId());
-		return results.getBody();
+				h.add(HttpHeaders.AUTHORIZATION, "Basic " + token);
+				h.add("Cookie", "SESSION=" + sessionId);
+				}).retrieve().bodyToFlux(Comment.class);
 	}
 	// end::get-comments[]
 

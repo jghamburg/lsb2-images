@@ -60,7 +60,7 @@ public class HomeController {
 					put("owner", image.getOwner());
 					put("comments",
 						commentHelper.getComments(image,
-							webSession.getId()));
+							webSession.getId()).collectList().block());
 				}})
 		);
 		// end::owner[]

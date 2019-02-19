@@ -33,7 +33,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  * @author Greg Turnquist
  */
 // tag::1[]
-@ContextConfiguration(classes = LearningSpringBootImagesApplication.class)
+//@ContextConfiguration(classes = LearningSpringBootImagesApplication.class)
 @DataMongoTest
 @ExtendWith(SpringExtension.class)
 public class EmbeddedImageRepositoryTests {
@@ -41,15 +41,14 @@ public class EmbeddedImageRepositoryTests {
 	@Autowired
 	ImageRepository repository;
 
+	// end::1[]
 	@Autowired
 	MongoOperations operations;
-	// end::1[]
-
 	// tag::2[]
 	/**
 	 * To avoid {@code block()} calls, use blocking {@link MongoOperations} during setup.
 	 */
-	@Before
+	//@Before
 	public void setUp() {
 		operations.dropCollection(Image.class);
 

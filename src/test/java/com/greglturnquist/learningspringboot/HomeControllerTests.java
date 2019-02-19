@@ -23,7 +23,13 @@ import com.greglturnquist.learningspringboot.images.ImageService;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -43,16 +49,17 @@ import org.springframework.test.web.reactive.server.WebTestClient;
  * @author Greg Turnquist
  */
 // tag::1[]
-@RunWith(SpringRunner.class)
-@WebFluxTest(controllers = HomeController.class)
+@ExtendWith(SpringExtension.class)
+//@RunWith(SpringRunner.class)
+@SpringBootTest
 @Import({ThymeleafAutoConfiguration.class})
 public class HomeControllerTests {
 
 	@Autowired
-	WebTestClient webClient;
+	private WebTestClient webClient;
 
 	@MockBean
-	ImageService imageService;
+	private ImageService imageService;
 	// end::1[]
 
 	// tag::2[]
@@ -61,19 +68,19 @@ public class HomeControllerTests {
 		// given
 		Image alphaImage = new Image("1", "alpha.png", "greg");
 		Image bravoImage = new Image("2", "bravo.png", "phil");
-		given(imageService.findAllImages())
+		given(this.imageService.findAllImages())
 			.willReturn(Flux.just(alphaImage, bravoImage));
 
 		// when
-		EntityExchangeResult<String> result = webClient
+		EntityExchangeResult<String> result = this.webClient
 			.get().uri("/")
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody(String.class).returnResult();
 
 		// then
-		verify(imageService).findAllImages();
-		verifyNoMoreInteractions(imageService);
+		verify(this.imageService).findAllImages();
+		verifyNoMoreInteractions(this.imageService);
 		assertThat(result.getResponseBody())
 			.contains(
 				"<title>Learning Spring Boot: Spring-a-Gram</title>")
@@ -123,6 +130,7 @@ public class HomeControllerTests {
 
 	// tag::5[]
 	@Test
+	@WithMockUser(username="admin",roles={"ADMIN"})
 	public void deleteImageShouldWork() {
 		given(imageService.deleteImage(any())).willReturn(Mono.empty());
 

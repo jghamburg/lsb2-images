@@ -16,9 +16,11 @@
 package com.greglturnquist.learningspringboot.images;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.cloud.client.loadbalancer.reactive.LoadBalancerExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * @author Greg Turnquist
@@ -27,10 +29,17 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class Config {
 
+/*
 	@Bean
 	@LoadBalanced
-	RestTemplate restTemplate() {
-		return new RestTemplate();
+	WebClient webClient() {
+		return WebClientBuilder.bui;
 	}
+*/
+// https://spring.io/blog/2018/06/20/the-road-to-reactive-spring-cloud
+@Bean
+WebClient webClient(LoadBalancerExchangeFilterFunction eff) {
+  return WebClient.builder().filter(eff).build();
+}
 }
 // end::code[]
