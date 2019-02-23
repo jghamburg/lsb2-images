@@ -15,59 +15,66 @@
  */
 package com.greglturnquist.learningspringboot.images;
 
+import com.greglturnquist.learningspringboot.ImagesConfiguration;
 import java.util.Collections;
 import java.util.List;
-
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
+import org.springframework.cloud.netflix.hystrix.HystrixCommands;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
-import org.springframework.web.client.RestTemplate;
-
-import com.greglturnquist.learningspringboot.ImagesConfiguration;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-/**
- * @author Greg Turnquist
- */
+/** @author Greg Turnquist */
 @Component
 public class CommentHelper {
 
+  private final WebClient webClient;
 
-	private final WebClient webClient;
+  private final ImagesConfiguration imagesConfiguration;
 
-	private final ImagesConfiguration imagesConfiguration;
+  CommentHelper(WebClient webClient, ImagesConfiguration imagesConfiguration) {
+    this.webClient = webClient.mutate().baseUrl("http://COMMENTS").build();
+    this.imagesConfiguration = imagesConfiguration;
+  }
 
-	CommentHelper(WebClient webClient,
-				  ImagesConfiguration imagesConfiguration) {
-		this.webClient = webClient;
-		this.imagesConfiguration = imagesConfiguration;
-	}
+  // tag::get-comments[]
+  public Flux<Comment> getComments(Image image, String sessionId) {
 
-	// tag::get-comments[]
-	public Flux<Comment> getComments(Image image, String sessionId) {
+    return webClient
+        .get()
+        .uri("/comments/{id}", image.getId())
+        .headers(
+            h -> {
+              String credentials =
+                  imagesConfiguration.getCommentsUser()
+                      + ":"
+                      + imagesConfiguration.getCommentsPassword();
+              String token = new String(Base64Utils.encode(credentials.getBytes()));
+              h.add(HttpHeaders.AUTHORIZATION, "Basic " + token);
+              h.add("Cookie", "SESSION=" + sessionId);
+            })
+        .retrieve()
+        .bodyToFlux(Comment.class);
+  }
 
-		return webClient.get()
-				.uri(uriBuilder -> uriBuilder.path("http://COMMENTS/comments/" + image.getId())
-						.build())
-			.headers(h -> {
-				String credentials = imagesConfiguration.getCommentsUser() + ":" +
-					imagesConfiguration.getCommentsPassword();
-				String token = new String(Base64Utils.encode(credentials.getBytes()));
-				h.add(HttpHeaders.AUTHORIZATION, "Basic " + token);
-				h.add("Cookie", "SESSION=" + sessionId);
-				}).retrieve().bodyToFlux(Comment.class);
-	}
-	// end::get-comments[]
+  // https://stackoverflow.com/questions/50688177/how-to-use-hystrix-with-spring-webflux-webclients
+/*
+  public Flux<Comment> getCommentsDefault(Image image, String sessionId) {
+    return
+        HystrixCommands.from(getCommentsSimple(image, sessionId))
+            .fallback(Flux.<Comment>empty())
+            .commandName("getWeatherByCityName")
+            .toMono();
+  }
 
-	// tag::fallback[]
-	public List<Comment> defaultComments(Image image, String sessionId) {
-		return Collections.emptyList();
-	}
-	// end::fallback[]
+  // end::get-comments[]
+
+  // tag::fallback[]
+  public Flux<Comment> defaultComments() {
+    return Flux.empty();
+  }
+*/
+  // end::fallback[]
 }
