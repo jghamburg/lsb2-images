@@ -24,6 +24,7 @@ repositories {
 }
 
 dependencies {
+  implementation platform('org.springframework.cloud:spring-cloud-dependencies:Greenwich.RELEASE')
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework.boot:spring-boot-starter-security'
   implementation 'org.springframework.cloud:spring-cloud-starter-config'
@@ -37,12 +38,12 @@ dependencies {
   implementation 'org.springframework.cloud:spring-cloud-stream-reactive'
   implementation 'org.synchronoss.cloud:nio-multipart-parser'
   implementation 'org.springframework.session:spring-session-data-mongodb'
-  implementation 'io.micrometer:micrometer-core:1.1.2'
+  implementation 'io.micrometer:micrometer-core'
   implementation 'org.seleniumhq.selenium:htmlunit-driver'
   implementation 'org.seleniumhq.selenium:selenium-java'
 
   testImplementation 'org.springframework.boot:spring-boot-starter-test'
-  testImplementation 'org.springframework.security:spring-security-test:5.1.4.RELEASE'
+  testImplementation 'org.springframework.security:spring-security-test'
   testImplementation 'io.projectreactor:reactor-test'
   testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
   // Junit Jupiter dependencies
@@ -50,12 +51,6 @@ dependencies {
   testImplementation 'org.junit.jupiter:junit-jupiter-engine'
   testImplementation "org.junit.platform:junit-platform-launcher:1.4.0"
   annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-}
-
-dependencyManagement {
-  imports {
-    mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-  }
 }
 
 sourceCompatibility = 1.8
