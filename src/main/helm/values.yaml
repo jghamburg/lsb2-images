@@ -7,7 +7,7 @@ app:
   configserver:
     uri: 'http://lsb2-config-server.local.svc.cluster.local'
   eurekaserver:
-    uri: 'http://user:password@lsb2-eureka-server'
+    uri: 'http://user:password@lsb2-eureka-server.local.svc.cluster.local'
   rabbitmq:
     host: local-rabbitmq
     port: 5672

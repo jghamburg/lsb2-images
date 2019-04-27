@@ -10,8 +10,8 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   # When the config map is mounted as a volume, these will be created as files.
-  PORT: {{ .Values.service.internalPort | quote }}
-  PROFILE: {{ .Values.app.profile }} 
+  PORT: {{ .Values.app.port | quote }}
+  PROFILE: {{ .Values.app.profile }}
   CONFIG_SERVER_URI: {{ .Values.app.configserver.uri }}
   EUREKA_SERVER_URI: {{ .Values.app.eurekaserver.uri }}
   RABBITMQ_HOST: {{ .Values.app.rabbitmq.host }}
