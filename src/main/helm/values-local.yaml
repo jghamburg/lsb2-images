@@ -1,3 +1,20 @@
+app:
+  port: 8080
+  profile: local
+  configserver:
+    uri: 'http://lsb2-config-server'
+  eurekaserver:
+    uri: 'http://user:password@lsb2-eureka-server'
+  rabbitmq:
+    host: local-rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+  mongodb:
+    host: local-mongo-server
+    port: 27017
+    dbname: lsb2db
+
 image:
   repository: jghamburg/lsb2-images
   tag: local
