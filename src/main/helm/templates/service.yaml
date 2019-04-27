@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "lsb2-images.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "lsb2-images.name" . }}
+    helm.sh/chart: {{ include "lsb2-images.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.app.port }}
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "lsb2-images.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

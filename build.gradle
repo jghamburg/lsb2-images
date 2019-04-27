@@ -7,6 +7,9 @@ plugins {
   id 'com.gorylenko.gradle-git-properties' version '2.0.0'
   id 'com.avast.gradle.docker-compose' version '0.8.13'
   id 'com.google.cloud.tools.jib' version '1.0.0'
+  id 'org.unbroken-dome.helm' version '0.3.1'
+  id 'org.unbroken-dome.helm-publish' version '0.3.1'
+  id 'org.unbroken-dome.helm-releases' version '0.3.1'
 }
 
 ext {
@@ -53,8 +56,8 @@ dependencies {
   annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 11
+targetCompatibility = 11
 
 lombok {
   version = '1.18.4'
@@ -69,6 +72,51 @@ bootJar {
   baseName = 'lsb2-images'
   version = ''
   excludeDevtools = false
+}
+helm {
+  // basic helm plugin config
+  home = file("${project.buildDir}/helm/home")
+  // outputDir = file("${project.buildDir}/helm")
+  // The global lint configuration applies to all charts
+  lint {
+      // treat linter warnings as errors (failing the build)
+      strict = false
+      enabled = true
+  }
+  filtering {
+    // This value will be resolvable in all charts' YAML files as ${authorName}
+    values.put 'authorName', 'Developer'
+  }
+  repositories {
+      museum {
+          url = uri('http://chartmuseum.local.svc.cluster.local/')
+      }
+  }
+  // helm-release plugin config
+  releases {
+      'lsb2-images' {
+          from charts.main
+          namespace = 'local'
+          replace = false
+          purge = true
+          dryRun = false
+          wait = false
+          // pass values (like --set on the command line)
+          values = [ 'rootUser.password': 'secret' ]
+          // pass value files (like -f on the command line)
+          valueFiles.from "src/main/helm/values.yaml"
+          valueFiles.from "src/main/helm/values-${activeSpringProfiles}.yaml"
+      }
+  }
+
+  // helm-publish plugin config
+  publishing {
+      repositories {
+          museum {
+              url = uri('http://chartmuseum.local.svc.cluster.local/')
+          }
+      }
+  }  
 }
 /*
  * docker-compose plugin configuration.
