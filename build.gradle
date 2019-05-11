@@ -86,11 +86,6 @@ bootJar {
   excludeDevtools = false
 }
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
 helm {
   // basic helm plugin config
   home = file("${project.buildDir}/helm/home")
