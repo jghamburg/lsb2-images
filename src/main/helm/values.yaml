@@ -28,7 +28,7 @@ nameOverride: ""
 fullnameOverride: "lsb2-images"
 
 service:
-  name: images
+  name: lsb2-images
   description: The lsb2 images service
   type: ClusterIP
   port: 80
