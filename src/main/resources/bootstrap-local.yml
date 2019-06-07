@@ -1,6 +1,6 @@
 spring:
   application:
-    name: images
+    name: lsb2-images
   cloud:
     config:
       label: session
