@@ -6,3 +6,4 @@
 .gradletasknamecache
 out
 upload-dir/*
+/node_modules
