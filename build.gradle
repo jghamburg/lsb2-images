@@ -38,8 +38,6 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework.boot:spring-boot-starter-security'
   implementation 'org.springframework.cloud:spring-cloud-starter-config'
-  implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-  implementation 'org.springframework.cloud:spring-cloud-starter-netflix-hystrix'
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
   implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
   implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
@@ -63,8 +61,8 @@ dependencies {
   annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 lombok {
   version = '1.18.4'
