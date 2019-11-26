@@ -1,5 +1,5 @@
 plugins {
-  id 'org.springframework.boot' version '2.1.7.RELEASE' apply true
+  id 'org.springframework.boot' version '2.1.10.RELEASE' apply true
   id "io.spring.dependency-management" version "1.0.8.RELEASE"
   id 'java'
   id 'idea'
@@ -34,7 +34,7 @@ repositories {
 }
 
 dependencies {
-  implementation platform('org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR2')
+  implementation platform('org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR4')
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework.boot:spring-boot-starter-security'
   implementation 'org.springframework.cloud:spring-cloud-starter-config'
@@ -177,4 +177,9 @@ jib {
 task semanticRelease (type: Exec){
   workingDir '.'
   commandLine 'semantic-release', '-b', 'master', '--no-ci'
+}
+
+task verifySemanticRelease (type: Exec){
+  workingDir '.'
+  commandLine 'semantic-release', '-b', 'master'
 }
