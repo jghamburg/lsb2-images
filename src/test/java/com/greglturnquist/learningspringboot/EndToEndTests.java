@@ -15,58 +15,53 @@
  */
 package com.greglturnquist.learningspringboot;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * @author Greg Turnquist
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(
-	webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Ignore
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Disabled
 public class EndToEndTests {
 
-	@Autowired
-	WebDriver driver;
+  @Autowired
+  WebDriver driver;
 
-	@LocalServerPort
-	int port;
+  @LocalServerPort
+  int port;
 
-	// tag::4[]
-	@Test
-	public void homePageShouldWork() throws IOException {
-		driver.get("http://localhost:" + port);
+  // tag::4[]
+  @Test
+  public void homePageShouldWork() throws IOException {
+    driver.get("http://localhost:" + port);
 
-		assertThat(driver.getTitle())
-			.isEqualTo("Learning Spring Boot: Spring-a-Gram");
+    assertThat(driver.getTitle())
+        .isEqualTo("Learning Spring Boot: Spring-a-Gram");
 
-		String pageContent = driver.getPageSource();
+    String pageContent = driver.getPageSource();
 
-		assertThat(pageContent)
-			.contains("<a href=\"/images/bazinga.png/raw\">");
+    assertThat(pageContent)
+        .contains("<a href=\"/images/bazinga.png/raw\">");
 
-		WebElement element = driver.findElement(
-			By.cssSelector("a[href*=\"bazinga.png\"]"));
-		Actions actions = new Actions(driver);
-		actions.moveToElement(element).click().perform();
+    WebElement element = driver.findElement(
+        By.cssSelector("a[href*=\"bazinga.png\"]"));
+    Actions actions = new Actions(driver);
+    actions.moveToElement(element).click().perform();
 
-		driver.navigate().back();
-	}
-	// end::4[]
+    driver.navigate().back();
+  }
+  // end::4[]
 
 }

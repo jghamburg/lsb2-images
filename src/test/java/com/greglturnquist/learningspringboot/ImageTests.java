@@ -15,9 +15,10 @@
  */
 package com.greglturnquist.learningspringboot;
 
-import com.greglturnquist.learningspringboot.images.Image;
-import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.greglturnquist.learningspringboot.images.Image;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Greg Turnquist
@@ -25,14 +26,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 // tag::code[]
 public class ImageTests {
 
-	@Test
-	public void imagesManagedByLombokShouldWork() {
-		Image image = new Image("id", "file-name.jpg", "greg");
+  @Test
+  public void imagesManagedByLombokShouldWork() {
+    Image image = new Image("id", "file-name.jpg", "greg");
 
-		assertThat(image.getId()).isEqualTo("id");
-		assertThat(image.getName()).isEqualTo("file-name.jpg");
-		assertThat(image.getOwner()).isEqualTo("greg");
-	}
+    assertThat(image.getId()).isEqualTo("id");
+    assertThat(image.getName()).isEqualTo("file-name.jpg");
+    assertThat(image.getOwner()).isEqualTo("greg");
+  }
 
 }
 // end::code[]

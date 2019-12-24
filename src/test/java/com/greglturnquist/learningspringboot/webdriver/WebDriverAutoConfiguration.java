@@ -15,12 +15,11 @@
  */
 package com.greglturnquist.learningspringboot.webdriver;
 
-import static org.openqa.selenium.chrome.ChromeDriverService.*;
+import static org.openqa.selenium.chrome.ChromeDriverService.createDefaultService;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -32,8 +31,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 
 /**
- * Autoconfigure a {@link WebDriver} based on what's available, falling back to {@link HtmlUnitDriver}
- * if none other is available.
+ * Autoconfigure a {@link WebDriver} based on what's available, falling back to {@link
+ * HtmlUnitDriver} if none other is available.
  *
  * @author Greg Turnquist
  */
@@ -41,52 +40,52 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 @ConditionalOnClass(WebDriver.class)
 @EnableConfigurationProperties(
-	WebDriverConfigurationProperties.class)
+    WebDriverConfigurationProperties.class)
 @Import({ChromeDriverFactory.class,
-	FirefoxDriverFactory.class, SafariDriverFactory.class})
+    FirefoxDriverFactory.class, SafariDriverFactory.class})
 public class WebDriverAutoConfiguration {
 // end::1[]
 
-	// tag::2[]
-	@Autowired
-	WebDriverConfigurationProperties properties;
-	// end::2[]
+  // tag::2[]
+  @Autowired
+  WebDriverConfigurationProperties properties;
+  // end::2[]
 
-	// tag::3[]
-	@Primary
-	@Bean(destroyMethod = "quit")
-	@ConditionalOnMissingBean(WebDriver.class)
-	public WebDriver webDriver(
-		FirefoxDriverFactory firefoxDriverFactory,
-		SafariDriverFactory safariDriverFactory,
-		ChromeDriverFactory chromeDriverFactory) {
+  // tag::3[]
+  @Primary
+  @Bean(destroyMethod = "quit")
+  @ConditionalOnMissingBean(WebDriver.class)
+  public WebDriver webDriver(
+      FirefoxDriverFactory firefoxDriverFactory,
+      SafariDriverFactory safariDriverFactory,
+      ChromeDriverFactory chromeDriverFactory) {
 
-		WebDriver driver = firefoxDriverFactory.getObject();
+    WebDriver driver = firefoxDriverFactory.getObject();
 
-		if (driver == null) {
-			driver = safariDriverFactory.getObject();
-		}
+    if (driver == null) {
+      driver = safariDriverFactory.getObject();
+    }
 
-		if (driver == null) {
-			driver = chromeDriverFactory.getObject();
-		}
+    if (driver == null) {
+      driver = chromeDriverFactory.getObject();
+    }
 
-		if (driver == null) {
-			driver = new HtmlUnitDriver();
-		}
+    if (driver == null) {
+      driver = new HtmlUnitDriver();
+    }
 
-		return driver;
-	}
-	// end::3[]
+    return driver;
+  }
+  // end::3[]
 
-	// tag::5[]
-	@Bean(destroyMethod = "stop")
-	@Lazy
-	public ChromeDriverService chromeDriverService() {
-		System.setProperty("webdriver.chrome.driver",
-			"ext/chromedriver");
-		return createDefaultService();
-	}
-	// end::5[]
+  // tag::5[]
+  @Bean(destroyMethod = "stop")
+  @Lazy
+  public ChromeDriverService chromeDriverService() {
+    System.setProperty("webdriver.chrome.driver",
+        "ext/chromedriver");
+    return createDefaultService();
+  }
+  // end::5[]
 
 }

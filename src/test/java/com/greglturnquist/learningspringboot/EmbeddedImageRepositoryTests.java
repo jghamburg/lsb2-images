@@ -20,14 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.greglturnquist.learningspringboot.images.Image;
 import com.greglturnquist.learningspringboot.images.ImageRepository;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * @author Greg Turnquist
@@ -35,59 +32,59 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 // tag::1[]
 //@ContextConfiguration(classes = LearningSpringBootImagesApplication.class)
 @DataMongoTest
-@ExtendWith(SpringExtension.class)
 public class EmbeddedImageRepositoryTests {
 
-	@Autowired
-	ImageRepository repository;
+  @Autowired
+  ImageRepository repository;
 
-	// end::1[]
-	@Autowired
-	MongoOperations operations;
-	// tag::2[]
-	/**
-	 * To avoid {@code block()} calls, use blocking {@link MongoOperations} during setup.
-	 */
-	//@Before
-	public void setUp() {
-		operations.dropCollection(Image.class);
+  // end::1[]
+  @Autowired
+  MongoOperations operations;
+  // tag::2[]
 
-		operations.insert(new Image("1",
-			"learning-spring-boot-cover.jpg", "greg"));
-		operations.insert(new Image("2",
-			"learning-spring-boot-2nd-edition-cover.jpg", "greg"));
-		operations.insert(new Image("3",
-			"bazinga.png", "greg"));
+  /**
+   * To avoid {@code block()} calls, use blocking {@link MongoOperations} during setup.
+   */
+  @BeforeEach
+  public void setUp() {
+    operations.dropCollection(Image.class);
 
-		operations.findAll(Image.class).forEach(image -> {
-			System.out.println(image.toString());
-		});
-	}
-	// end::2[]
+    operations.insert(new Image("1",
+        "learning-spring-boot-cover.jpg", "greg"));
+    operations.insert(new Image("2",
+        "learning-spring-boot-2nd-edition-cover.jpg", "greg"));
+    operations.insert(new Image("3",
+        "bazinga.png", "greg"));
 
-	// tag::3[]
-	@Test
-	public void findAllShouldWork() {
-		List<Image> images = repository.findAll().collectList().block();
+    operations.findAll(Image.class).forEach(image -> {
+      System.out.println(image.toString());
+    });
+  }
+  // end::2[]
 
-		assertThat(images).hasSize(3);
-		assertThat(images)
-			.extracting(Image::getName)
-			.contains(
-				"learning-spring-boot-cover.jpg",
-				"learning-spring-boot-2nd-edition-cover.jpg",
-				"bazinga.png");
-	}
-	// end::3[]
+  // tag::3[]
+  @Test
+  public void findAllShouldWork() {
+    List<Image> images = repository.findAll().collectList().block();
 
-	// tag::4[]
-	@Test
-	public void findByNameShouldWork() {
-		Image image = repository.findByName("bazinga.png").block();
+    assertThat(images).hasSize(3);
+    assertThat(images)
+        .extracting(Image::getName)
+        .contains(
+            "learning-spring-boot-cover.jpg",
+            "learning-spring-boot-2nd-edition-cover.jpg",
+            "bazinga.png");
+  }
+  // end::3[]
 
-		assertThat(image.getName()).isEqualTo("bazinga.png");
-		assertThat(image.getId()).isEqualTo("3");
-	}
-	// end::4[]
+  // tag::4[]
+  @Test
+  public void findByNameShouldWork() {
+    Image image = repository.findByName("bazinga.png").block();
+
+    assertThat(image.getName()).isEqualTo("bazinga.png");
+    assertThat(image.getId()).isEqualTo("3");
+  }
+  // end::4[]
 
 }

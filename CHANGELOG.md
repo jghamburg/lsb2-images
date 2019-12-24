@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/jghamburg/lsb2-images/compare/v1.1.0...v1.2.0) (2019-12-24)
+
+
+### Bug Fixes
+
+* **runtime:** fix local configuration runtime ([064a1ca](https://github.com/jghamburg/lsb2-images/commit/064a1cab070b7f1ddfba806e84acde2544f879ba))
+
+
+### Features
+
+* **config:** parametrize commentUrl ([f692b9e](https://github.com/jghamburg/lsb2-images/commit/f692b9e25da19db5be8a5c3f1da3e70a127e7971))
+
 # [1.1.0](https://github.com/jghamburg/lsb2-images/compare/v1.0.0...v1.1.0) (2019-09-04)
 
 

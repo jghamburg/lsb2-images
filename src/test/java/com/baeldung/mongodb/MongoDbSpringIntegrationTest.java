@@ -3,6 +3,8 @@ package com.baeldung.mongodb;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.greglturnquist.learningspringboot.LearningSpringBootImagesApplication;
+import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DBObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,13 +14,11 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DBObject;
-
 @ContextConfiguration(classes = LearningSpringBootImagesApplication.class)
 @DataMongoTest
 @ExtendWith(SpringExtension.class)
 public class MongoDbSpringIntegrationTest {
+
   @DisplayName("Given object When save object using MongoDB template Then object can be found")
   @Test
   public void test(@Autowired MongoTemplate mongoTemplate) {

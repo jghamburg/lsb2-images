@@ -17,7 +17,6 @@ package com.greglturnquist.learningspringboot.webdriver;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectFactory;
 
@@ -27,23 +26,23 @@ import org.springframework.beans.factory.ObjectFactory;
 // tag::code[]
 class FirefoxDriverFactory implements ObjectFactory<FirefoxDriver> {
 
-	private WebDriverConfigurationProperties properties;
+  private WebDriverConfigurationProperties properties;
 
-	FirefoxDriverFactory(WebDriverConfigurationProperties properties) {
-		this.properties = properties;
-	}
+  FirefoxDriverFactory(WebDriverConfigurationProperties properties) {
+    this.properties = properties;
+  }
 
-	@Override
-	public FirefoxDriver getObject() throws BeansException {
-		if (properties.getFirefox().isEnabled()) {
-			try {
-				return new FirefoxDriver();
-			} catch (WebDriverException | IllegalStateException e) {
-				e.printStackTrace();
-				// swallow the exception
-			}
-		}
-		return null;
-	}
+  @Override
+  public FirefoxDriver getObject() throws BeansException {
+    if (properties.getFirefox().isEnabled()) {
+      try {
+        return new FirefoxDriver();
+      } catch (WebDriverException | IllegalStateException e) {
+        e.printStackTrace();
+        // swallow the exception
+      }
+    }
+    return null;
+  }
 }
 // end::code[]
