@@ -1,5 +1,5 @@
 plugins {
-  id 'org.springframework.boot' version '2.2.1.RELEASE'
+  id 'org.springframework.boot' version '2.1.10.RELEASE'
   id "io.spring.dependency-management" version "1.0.8.RELEASE"
   id 'java'
   id 'idea'
@@ -22,9 +22,9 @@ plugins {
 }
 
 ext {
-  springcloudversion = 'Hoxton.RELEASE'
-  set('activeSpringProfiles', 'local')
-  set('chartRepoUrl', 'http://chartmuseum.default.svc.cluster.local/')
+  springcloudversion = 'Greenwich.SR4'
+  activeSpringProfiles = 'local'
+  chartRepoUrl = 'http://chartmuseum.default.svc.cluster.local/'
   junitplatform = '1.5.2'
   junitjupiter = '5.5.2'
   powermockVersion = '2.0.2'
@@ -37,7 +37,6 @@ ext {
 }
 
 group = 'com.gregturnquist.learningspringboot'
-//version = '0.0.1-SNAPSHOT'
 
 repositories {
   mavenCentral()
@@ -53,7 +52,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
   implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
   implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
-  implementation 'org.springframework.cloud:spring-cloud-stream-reactive:2.2.1.RELEASE'
+  implementation 'org.springframework.cloud:spring-cloud-stream-reactive'
   implementation 'org.synchronoss.cloud:nio-multipart-parser'
   implementation 'org.springframework.session:spring-session-data-mongodb'
   implementation 'io.micrometer:micrometer-core'
