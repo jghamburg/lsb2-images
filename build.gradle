@@ -1,5 +1,5 @@
 plugins {
-  id 'org.springframework.boot' version '2.1.10.RELEASE'
+  id 'org.springframework.boot' version '2.2.2.RELEASE'
   id "io.spring.dependency-management" version "1.0.8.RELEASE"
   id 'java'
   id 'idea'
@@ -22,7 +22,7 @@ plugins {
 }
 
 ext {
-  springcloudversion = 'Greenwich.SR4'
+  springcloudversion = 'Hoxton.SR1'
   activeSpringProfiles = 'local'
   chartRepoUrl = 'http://chartmuseum.default.svc.cluster.local/'
   junitplatform = '1.5.2'
@@ -44,7 +44,7 @@ repositories {
 }
 
 dependencies {
-  implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springcloudversion}")
+  implementation enforcedPlatform("org.springframework.cloud:spring-cloud-dependencies:${springcloudversion}")
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework.boot:spring-boot-starter-security'
   implementation 'org.springframework.cloud:spring-cloud-starter-config'
@@ -52,7 +52,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
   implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
   implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
-  implementation 'org.springframework.cloud:spring-cloud-stream-reactive'
+//  implementation 'org.springframework.cloud:spring-cloud-stream-reactive:2.2.1.RELEASE'
   implementation 'org.synchronoss.cloud:nio-multipart-parser'
   implementation 'org.springframework.session:spring-session-data-mongodb'
   implementation 'io.micrometer:micrometer-core'

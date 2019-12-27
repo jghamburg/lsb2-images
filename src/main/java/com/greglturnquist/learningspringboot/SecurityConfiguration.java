@@ -21,6 +21,7 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
+import org.springframework.session.data.mongo.config.annotation.web.reactive.EnableMongoWebSession;
 
 /**
  * @author Greg Turnquist
@@ -28,6 +29,7 @@ import org.springframework.security.web.server.context.WebSessionServerSecurityC
 // tag::code[]
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
+@EnableMongoWebSession
 public class SecurityConfiguration {
 
   @Bean
