@@ -1,38 +1,36 @@
 plugins {
-  id 'org.springframework.boot' version '2.2.2.RELEASE'
-  id "io.spring.dependency-management" version "1.0.8.RELEASE"
+  id 'org.springframework.boot' version '2.2.6.RELEASE'
+  id "io.spring.dependency-management" version "1.0.9.RELEASE"
   id 'java'
   id 'idea'
-  id 'io.franzbecker.gradle-lombok' version '3.0.0'
-  id 'com.gorylenko.gradle-git-properties' version '2.1.0'
+  id 'io.franzbecker.gradle-lombok' version '3.3.0'
+  id 'com.gorylenko.gradle-git-properties' version '2.2.2'
 
-  id 'com.palantir.docker' version '0.22.1'
-  id 'com.palantir.docker-run' version '0.22.1'
-  id 'com.avast.gradle.docker-compose' version '0.9.4'
-  id 'com.google.cloud.tools.jib' version '1.5.1'
+  id 'com.palantir.docker' version '0.25.0'
+  id 'com.palantir.docker-run' version '0.25.0'
+  id 'com.avast.gradle.docker-compose' version '0.10.10'
+  id 'com.google.cloud.tools.jib' version '2.1.0'
 
-  id 'org.unbroken-dome.helm' version '0.4.0'
-  id 'org.unbroken-dome.helm-publish' version '0.4.0'
-  id 'org.unbroken-dome.helm-releases' version '0.4.0'
+  id 'org.unbroken-dome.helm' version '0.4.1'
+  id 'org.unbroken-dome.helm-publish' version '0.4.1'
+  id 'org.unbroken-dome.helm-releases' version '0.4.1'
 
-  id 'se.patrikerdes.use-latest-versions' version '0.2.12'
-  id 'com.github.ben-manes.versions' version '0.24.0'
+  id 'se.patrikerdes.use-latest-versions' version '0.2.13'
+  id 'com.github.ben-manes.versions' version '0.28.0'
 
   id 'maven-publish'
 }
 
 ext {
-  springcloudversion = 'Hoxton.SR1'
+  springcloudversion = '2020-1.M1'
   activeSpringProfiles = 'local'
   chartRepoUrl = 'http://chartmuseum.default.svc.cluster.local/'
-  junitplatform = '1.5.2'
-  junitjupiter = '5.5.2'
-  powermockVersion = '2.0.2'
-  spockversion = '1.3-groovy-2.5'
-  spockReportsVersion = '1.6.2'
-  mockitoversion = '2.28.2'
-  groovyversion = '2.5.8'
-  allureVersion = '2.12.1'
+  powermockVersion = '2.0.7'
+  spockversion = '2.0-M2-groovy-3.0'
+  spockReportsVersion = '1.7.1'
+  mockitoversion = '3.3.3'
+  groovyversion = '3.0.3'
+  allureVersion = '2.13.2'
   togglzversion = '2.6.1.Final'
 }
 
@@ -52,7 +50,6 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
   implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
   implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
-//  implementation 'org.springframework.cloud:spring-cloud-stream-reactive:2.2.1.RELEASE'
   implementation 'org.synchronoss.cloud:nio-multipart-parser'
   implementation 'org.springframework.session:spring-session-data-mongodb'
   implementation 'io.micrometer:micrometer-core'
@@ -66,15 +63,6 @@ dependencies {
   testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
   testImplementation 'org.seleniumhq.selenium:htmlunit-driver'
   testImplementation 'org.seleniumhq.selenium:selenium-java'
-  // JUnit 5
-  testImplementation "org.junit.platform:junit-platform-launcher:${junitplatform}"
-  testImplementation "org.junit.platform:junit-platform-engine:${junitplatform}"
-  testImplementation "org.junit.platform:junit-platform-commons:${junitplatform}"
-  testImplementation "org.junit.jupiter:junit-jupiter-api:${junitjupiter}"
-  testImplementation "org.junit.vintage:junit-vintage-engine:${junitjupiter}"
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitjupiter}"
-  testImplementation "org.mockito:mockito-core:${mockitoversion}"
-  testImplementation "org.mockito:mockito-junit-jupiter:${mockitoversion}"
   testImplementation "org.powermock:powermock-api-mockito2:${powermockVersion}"
   // feature togglz
   testImplementation "org.togglz:togglz-junit5:${togglzversion}"
@@ -88,8 +76,8 @@ dependencies {
     transitive = false // this avoids affecting your version of Groovy/Spock
   }
   testImplementation 'com.blogspot.toomuchcoding:spock-subjects-collaborators-extension:1.2.2'
-  testRuntime 'cglib:cglib-nodep:3.2.12'
-  testRuntime 'org.objenesis:objenesis:3.0.1'
+  testRuntime 'cglib:cglib-nodep:3.3.0'
+  testRuntime 'org.objenesis:objenesis:3.1'
   // allure test reporting
   //testRuntimeOnly "com.squareup.retrofit2:converter-gson:${allureVersion}"
   testRuntimeOnly "io.qameta.allure:allure-okhttp3:${allureVersion}"
@@ -102,7 +90,7 @@ sourceCompatibility = 11
 targetCompatibility = 11
 
 lombok {
-  version = '1.18.4'
+  version = '1.18.10'
   sha256 = ""
 }
 
@@ -213,7 +201,7 @@ composePush.dependsOn composeBuild
 
 jib {
   from {
-    image = 'azul/zulu-openjdk-alpine:11.0.3'
+    image = 'azul/zulu-openjdk-alpine:11.0.6'
   }
   to {
     image = "jghamburg/lsb2-images:local"
@@ -224,7 +212,6 @@ jib {
     mainClass = 'com.greglturnquist.learningspringboot.images.LearningSpringBootImagesApplication'
     args = []
     ports = ['8080']
-    format = 'OCI'
   }
 }
 
