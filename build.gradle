@@ -1,35 +1,35 @@
 plugins {
-  id 'org.springframework.boot' version '2.2.6.RELEASE'
-  id "io.spring.dependency-management" version "1.0.9.RELEASE"
+  id 'org.springframework.boot' version '2.4.2'
+  id "io.spring.dependency-management" version "1.0.11.RELEASE"
   id 'java'
   id 'idea'
   id 'io.franzbecker.gradle-lombok' version '3.3.0'
-  id 'com.gorylenko.gradle-git-properties' version '2.2.2'
+  id 'com.gorylenko.gradle-git-properties' version '2.2.4'
 
   id 'com.palantir.docker' version '0.25.0'
   id 'com.palantir.docker-run' version '0.25.0'
-  id 'com.avast.gradle.docker-compose' version '0.10.10'
-  id 'com.google.cloud.tools.jib' version '2.1.0'
 
-  id 'org.unbroken-dome.helm' version '0.4.1'
-  id 'org.unbroken-dome.helm-publish' version '0.4.1'
-  id 'org.unbroken-dome.helm-releases' version '0.4.1'
+  id 'com.avast.gradle.docker-compose' version '0.14.0'
+  id 'com.google.cloud.tools.jib' version '2.7.1'
+  id 'org.unbroken-dome.helm' version '1.4.0'
+  id 'org.unbroken-dome.helm-publish' version '1.4.0'
+  id 'org.unbroken-dome.helm-releases' version '1.4.0'
 
-  id 'se.patrikerdes.use-latest-versions' version '0.2.13'
-  id 'com.github.ben-manes.versions' version '0.28.0'
+  id 'se.patrikerdes.use-latest-versions' version '0.2.15'
+  id 'com.github.ben-manes.versions' version '0.36.0'
 
   id 'maven-publish'
 }
 
 ext {
-  springcloudversion = '2020-1.M1'
+  springcloudversion = '2020.0.1'
   activeSpringProfiles = 'local'
   chartRepoUrl = 'http://chartmuseum.default.svc.cluster.local/'
   powermockVersion = '2.0.7'
-  spockversion = '2.0-M2-groovy-3.0'
+  spockversion = '2.0-M3-groovy-3.0'
   spockReportsVersion = '1.7.1'
   mockitoversion = '3.3.3'
-  groovyversion = '3.0.3'
+  groovyversion = '3.0.5'
   allureVersion = '2.13.2'
   togglzversion = '2.6.1.Final'
 }
@@ -42,15 +42,14 @@ repositories {
 }
 
 dependencies {
-  implementation enforcedPlatform("org.springframework.cloud:spring-cloud-dependencies:${springcloudversion}")
+  implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springcloudversion}")
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework.boot:spring-boot-starter-security'
   implementation 'org.springframework.cloud:spring-cloud-starter-config'
   implementation 'org.springframework.boot:spring-boot-starter-webflux'
   implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
   implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
-  implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
-  implementation 'org.synchronoss.cloud:nio-multipart-parser'
+  implementation "org.springframework.cloud:spring-cloud-starter-stream-rabbit"
   implementation 'org.springframework.session:spring-session-data-mongodb'
   implementation 'io.micrometer:micrometer-core'
   runtimeOnly 'org.springframework.boot:spring-boot-devtools'
@@ -104,16 +103,11 @@ springBoot {
     }
   }
 }
+
 bootJar {
-  archiveName = 'app.jar'
-  manifest {
-    attributes 'Implementation-Title': 'OBC Brandshopupdater Backend',
-        'Implementation-Version': version,
-        'Built-By': System.getProperty('user.name'),
-        'Built-Date': new Date(),
-        'Built-JDK': System.getProperty('java.version'),
-        'Built-Gradle': gradle.gradleVersion
-  }
+  baseName = 'lsb2-images'
+  layered()
+  excludeDevtools = false
 }
 
 publishing {
@@ -125,58 +119,80 @@ publishing {
     }
 }
 
+tasks.jib.dependsOn tasks.check
+jib {
+    from {
+        image = 'gcr.io/distroless/java-debian10'
+    }
+    to {
+      image = 'jghamburg/lsb2-images'
+      tags = ["latest", project.version]
+      credHelper = 'osxkeychain'
+    }
+    extraDirectories {
+        paths = file('./ssl')
+    }
+    container {
+      jvmFlags = ['-Djava.security.egd=file:/dev/./urandom', '-Xms256m', '-Xdebug']
+      mainClass = 'com.greglturnquist.learningspringboot.LearningSpringBootImagesApplication'
+      args = []
+      ports = ['8080']
+    }
+}
 helm {
-  // basic helm plugin config
-  home = file("${project.buildDir}/helm/home")
-  outputDir = file("${project.buildDir}/helm")
-  // The global lint configuration applies to all charts
-  lint {
-      // treat linter warnings as errors (failing the build)
-      strict = false
-      enabled = true
-  }
-  filtering {
-    // This value will be resolvable in all charts' YAML files as ${authorName}
-    values.put 'authorName', 'Developer'
-    values.put 'image.tag', project.version.toString()
-  }
-  charts {
-    'lsb2-images' {
-        chartName = project.name
-        chartVersion = project.version.toString()
-        sourceDir = file('src/main/helm/lsb2-images')
+    // The global lint configuration applies to all charts
+    lint {
+        // treat linter warnings as errors (failing the build)
+        strict = true
     }
-  }
-  repositories {
-      museum {
-         url = uri(chartRepoUrl)
-      }
-  }
-  // helm-release plugin config
-  releases {
-      'lsb2-images' {
-          from charts.'lsb2-images'
-          namespace = 'local'
-          replace = false
-          purge = true
-          dryRun = false
-          wait = false
-          // pass values (like --set on the command line)
-          values = [ 'image.tag': project.version ]
-          // pass value files (like -f on the command line)
-          valueFiles.from "src/main/helm/lsb2-images/values.yaml"
-          valueFiles.from "src/main/helm/lsb2-images/values-${activeSpringProfiles}.yaml"
-      }
-  }
 
-  // helm-publish plugin config
-  publishing {
-    repositories {
-      museum {
-        url = uri(chartRepoUrl)
-      }
+    publishing {
+        repositories {
+            chartMuseum('localcharts') {
+                url = uri('http://chartmuseum-chartmuseum.default.svc.cluster.local:8080')
+            }
+        }
     }
-  }
+
+    filtering {
+        values.put 'imageRepository', jib.to.image
+        values.put 'imageTag', jib.to.tags.first()
+        values.put 'appVersion', "${project.version}"
+    }
+
+    charts {
+        main {
+          chartVersion = "${project.version}"
+          sourceDir = file('src/main/helm/lsb2-images')
+        }
+    }
+
+    releases {
+
+        images {
+            valuesDir 'src/main/helm/lsb2-images'
+            forTarget('local') {
+                from chart('main')
+                installDependsOn 'jibDockerBuild'
+                values.put 'imageTag', 'latest'
+                values.put 'appVersion', "${project.version}"
+            }
+            forTarget('nonlive') {
+                from chart('main')
+                installDependsOn 'jib'
+            }
+        }
+    }
+    releaseTargets {
+        local {
+//            kubeContext = 'docker-for-desktop'
+        }
+        nonlive {
+//            kubeContext = 'aws'
+//            atomic = true
+        }
+    }
+
 }
 /*
  * docker-compose plugin configuration.
@@ -198,22 +214,6 @@ dockerCompose {
 composeBuild.dependsOn bootJar
 composeUp.dependsOn composeBuild
 composePush.dependsOn composeBuild
-
-jib {
-  from {
-    image = 'azul/zulu-openjdk-alpine:11.0.6'
-  }
-  to {
-    image = "jghamburg/lsb2-images:local"
-//    credHelper = 'osxkeychain'
-  }
-  container {
-    jvmFlags = ['-Djava.security.egd=file:/dev/./urandom', '-Xms512m', '-Xdebug', "-Dspring.profiles.active=${activeSpringProfiles}"]
-    mainClass = 'com.greglturnquist.learningspringboot.images.LearningSpringBootImagesApplication'
-    args = []
-    ports = ['8080']
-  }
-}
 
 dockerRun{
   name 'semantic-release'
