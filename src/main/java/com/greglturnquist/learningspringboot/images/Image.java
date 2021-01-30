@@ -17,7 +17,7 @@ package com.greglturnquist.learningspringboot.images;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 /**
@@ -26,10 +26,16 @@ import org.springframework.data.annotation.Id;
 // tag::code[]
 @Data
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class Image {
 
-	@Id private String id;
-	private String name;
-	private String owner;
+    @Id
+    private String id;
+    private final String name;
+    private final String owner;
+
+    public Image withId(String id) {
+        return new Image(id, this.name, this.owner);
+    }
 }
 // end::code[]

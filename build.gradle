@@ -1,113 +1,114 @@
 plugins {
-  id 'org.springframework.boot' version '2.4.2'
-  id "io.spring.dependency-management" version "1.0.11.RELEASE"
-  id 'java'
-  id 'idea'
-  id 'io.franzbecker.gradle-lombok' version '3.3.0'
-  id 'com.gorylenko.gradle-git-properties' version '2.2.4'
+    id 'org.springframework.boot' version '2.4.2'
+    id "io.spring.dependency-management" version "1.0.11.RELEASE"
+    id 'java'
+    id 'idea'
+    id 'io.franzbecker.gradle-lombok' version '4.0.0'
+    id 'com.gorylenko.gradle-git-properties' version '2.2.4'
 
-  id 'com.palantir.docker' version '0.25.0'
-  id 'com.palantir.docker-run' version '0.25.0'
+    id 'com.palantir.docker' version '0.25.0'
+    id 'com.palantir.docker-run' version '0.25.0'
 
-  id 'com.avast.gradle.docker-compose' version '0.14.0'
-  id 'com.google.cloud.tools.jib' version '2.7.1'
-  id 'org.unbroken-dome.helm' version '1.4.0'
-  id 'org.unbroken-dome.helm-publish' version '1.4.0'
-  id 'org.unbroken-dome.helm-releases' version '1.4.0'
+    id 'com.avast.gradle.docker-compose' version '0.14.0'
+    id 'com.google.cloud.tools.jib' version '2.7.1'
+    id 'org.unbroken-dome.helm' version '1.4.0'
+    id 'org.unbroken-dome.helm-publish' version '1.4.0'
+    id 'org.unbroken-dome.helm-releases' version '1.4.0'
 
-  id 'se.patrikerdes.use-latest-versions' version '0.2.15'
-  id 'com.github.ben-manes.versions' version '0.36.0'
+    id 'se.patrikerdes.use-latest-versions' version '0.2.15'
+    id 'com.github.ben-manes.versions' version '0.36.0'
 
-  id 'maven-publish'
+    id 'maven-publish'
 }
 
 ext {
-  springcloudversion = '2020.0.1'
-  activeSpringProfiles = 'local'
-  chartRepoUrl = 'http://chartmuseum.default.svc.cluster.local/'
-  powermockVersion = '2.0.7'
-  spockversion = '2.0-M3-groovy-3.0'
-  spockReportsVersion = '1.7.1'
-  mockitoversion = '3.3.3'
-  groovyversion = '3.0.5'
-  allureVersion = '2.13.2'
-  togglzversion = '2.6.1.Final'
+    springcloudversion = '2020.0.1'
+    activeSpringProfiles = 'local'
+    chartRepoUrl = 'http://chartmuseum.default.svc.cluster.local/'
+    powermockVersion = '2.0.7'
+    spockversion = '2.0-M3-groovy-3.0'
+    spockReportsVersion = '1.7.1'
+    mockitoversion = '3.3.3'
+    groovyversion = '3.0.5'
+    allureVersion = '2.13.2'
+    togglzversion = '2.6.1.Final'
 }
 
 group = 'com.gregturnquist.learningspringboot'
 
 repositories {
-  mavenCentral()
-  maven { url 'https://repo.spring.io/milestone' }
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
 }
 
 dependencies {
-  implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springcloudversion}")
-  implementation 'org.springframework.boot:spring-boot-starter-actuator'
-  implementation 'org.springframework.boot:spring-boot-starter-security'
-  implementation 'org.springframework.cloud:spring-cloud-starter-config'
-  implementation 'org.springframework.boot:spring-boot-starter-webflux'
-  implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
-  implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
-  implementation "org.springframework.cloud:spring-cloud-starter-stream-rabbit"
-  implementation 'org.springframework.session:spring-session-data-mongodb'
-  implementation 'io.micrometer:micrometer-core'
-  runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springcloudversion}")
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+    implementation 'org.mongodb:mongodb-driver-sync'
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+    implementation "org.springframework.cloud:spring-cloud-starter-stream-rabbit"
+    implementation 'org.springframework.session:spring-session-data-mongodb'
+    implementation 'io.micrometer:micrometer-core'
+    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
 
-  annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-  testImplementation 'org.springframework.boot:spring-boot-starter-test'
-  testImplementation 'org.springframework.security:spring-security-test'
-  testImplementation 'io.projectreactor:reactor-test'
-  testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
-  testImplementation 'org.seleniumhq.selenium:htmlunit-driver'
-  testImplementation 'org.seleniumhq.selenium:selenium-java'
-  testImplementation "org.powermock:powermock-api-mockito2:${powermockVersion}"
-  // feature togglz
-  testImplementation "org.togglz:togglz-junit5:${togglzversion}"
-  testImplementation "org.togglz:togglz-junit:${togglzversion}"
-  // spock test framework
-  // Groovy
-  testImplementation "org.codehaus.groovy:groovy-all:${groovyversion}"
-  testImplementation "org.spockframework:spock-core:${spockversion}"
-  testImplementation "org.spockframework:spock-spring:${spockversion}"
-  testImplementation("com.athaydes:spock-reports:${spockReportsVersion}") {
-    transitive = false // this avoids affecting your version of Groovy/Spock
-  }
-  testImplementation 'com.blogspot.toomuchcoding:spock-subjects-collaborators-extension:1.2.2'
-  testRuntime 'cglib:cglib-nodep:3.3.0'
-  testRuntime 'org.objenesis:objenesis:3.1'
-  // allure test reporting
-  //testRuntimeOnly "com.squareup.retrofit2:converter-gson:${allureVersion}"
-  testRuntimeOnly "io.qameta.allure:allure-okhttp3:${allureVersion}"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+    testImplementation 'org.seleniumhq.selenium:htmlunit-driver'
+    testImplementation 'org.seleniumhq.selenium:selenium-java'
+    testImplementation "org.powermock:powermock-api-mockito2:${powermockVersion}"
+    // feature togglz
+    testImplementation "org.togglz:togglz-junit5:${togglzversion}"
+    testImplementation "org.togglz:togglz-junit:${togglzversion}"
+    // spock test framework
+    // Groovy
+    testImplementation "org.codehaus.groovy:groovy-all:${groovyversion}"
+    testImplementation "org.spockframework:spock-core:${spockversion}"
+    testImplementation "org.spockframework:spock-spring:${spockversion}"
+    testImplementation("com.athaydes:spock-reports:${spockReportsVersion}") {
+        transitive = false // this avoids affecting your version of Groovy/Spock
+    }
+    testImplementation 'com.blogspot.toomuchcoding:spock-subjects-collaborators-extension:1.2.2'
+    testRuntime 'cglib:cglib-nodep:3.3.0'
+    testRuntime 'org.objenesis:objenesis:3.1'
+    // allure test reporting
+    //testRuntimeOnly "com.squareup.retrofit2:converter-gson:${allureVersion}"
+    testRuntimeOnly "io.qameta.allure:allure-okhttp3:${allureVersion}"
 //  testRuntimeOnly "io.qameta.allure:allure-spock:${allureVersion}"
-  testRuntimeOnly "io.qameta.allure:allure-junit4:${allureVersion}"
-  testRuntimeOnly "io.qameta.allure:allure-junit5:${allureVersion}"
+    testRuntimeOnly "io.qameta.allure:allure-junit4:${allureVersion}"
+    testRuntimeOnly "io.qameta.allure:allure-junit5:${allureVersion}"
 }
 
 sourceCompatibility = 11
 targetCompatibility = 11
 
 lombok {
-  version = '1.18.10'
-  sha256 = ""
+    version = '1.18.18'
+    sha256 = ""
 }
 
 springBoot {
-  buildInfo {
-    properties {
-      artifact = "${rootProject.name}"
-      group = "${project.group}"
-      name = "${rootProject.name}"
-      version = "${project.version}"
+    buildInfo {
+        properties {
+            artifact = "${rootProject.name}"
+            group = "${project.group}"
+            name = "${rootProject.name}"
+            version = "${project.version}"
+        }
     }
-  }
 }
 
 bootJar {
-  baseName = 'lsb2-images'
-  layered()
-  excludeDevtools = false
+    baseName = 'lsb2-images'
+    layered()
+    excludeDevtools = false
 }
 
 publishing {
@@ -125,18 +126,18 @@ jib {
         image = 'gcr.io/distroless/java-debian10'
     }
     to {
-      image = 'jghamburg/lsb2-images'
-      tags = ["latest", project.version]
-      credHelper = 'osxkeychain'
+        image = 'jghamburg/lsb2-images'
+        tags = ["latest", project.version]
+        credHelper = 'osxkeychain'
     }
     extraDirectories {
         paths = file('./ssl')
     }
     container {
-      jvmFlags = ['-Djava.security.egd=file:/dev/./urandom', '-Xms256m', '-Xdebug']
-      mainClass = 'com.greglturnquist.learningspringboot.LearningSpringBootImagesApplication'
-      args = []
-      ports = ['8080']
+        jvmFlags = ['-Djava.security.egd=file:/dev/./urandom', '-Xms256m', '-Xdebug']
+        mainClass = 'com.greglturnquist.learningspringboot.LearningSpringBootImagesApplication'
+        args = []
+        ports = ['8080']
     }
 }
 helm {
@@ -162,8 +163,8 @@ helm {
 
     charts {
         main {
-          chartVersion = "${project.version}"
-          sourceDir = file('src/main/helm/lsb2-images')
+            chartVersion = "${project.version}"
+            sourceDir = file('src/main/helm/lsb2-images')
         }
     }
 
@@ -199,29 +200,30 @@ helm {
  * Details on https://github.com/avast/gradle-docker-compose-plugin
  */
 dockerCompose {
-  useComposeFiles = ['docker/env/local.yml'] // like 'docker-compose -f <file>'; default is empty
-  buildBeforeUp = true // performs 'docker-compose build' before calling the 'up' command; default is true
+    useComposeFiles = ['docker/env/local.yml'] // like 'docker-compose -f <file>'; default is empty
+    buildBeforeUp = true // performs 'docker-compose build' before calling the 'up' command; default is true
 
-  waitForTcpPorts = true // turns off the waiting for exposed TCP ports opening
-  captureContainersOutput = true // if true, prints output of all containers to Gradle output - very useful for debugging; default is false
+    waitForTcpPorts = true // turns off the waiting for exposed TCP ports opening
+    captureContainersOutput = true
+    // if true, prints output of all containers to Gradle output - very useful for debugging; default is false
 
-  stopContainers = true // doesn't call `docker-compose down` - see below the paragraph about reconnecting
-  removeContainers = true
-  removeOrphans = false // removes containers for services not defined in the Compose file
+    stopContainers = true // doesn't call `docker-compose down` - see below the paragraph about reconnecting
+    removeContainers = true
+    removeOrphans = false // removes containers for services not defined in the Compose file
 
-  environment.put 'TAG', version
+    environment.put 'TAG', version
 }
 composeBuild.dependsOn bootJar
 composeUp.dependsOn composeBuild
 composePush.dependsOn composeBuild
 
-dockerRun{
-  name 'semantic-release'
-  image 'jghamburg/git-semantic-release'
-  volumes "${projectDir}": '/app'
-  ports '7080:5000'
-  daemonize false
-  clean true
-  command 'semantic-release', '-b', 'master', '--no-ci'
-  env 'GH_TOKEN': "${System.env.GH_TOKEN}", 'GIT_CREDENTIALS': "${System.env.GIT_CREDENTIALS}"
+dockerRun {
+    name 'semantic-release'
+    image 'jghamburg/git-semantic-release'
+    volumes "${projectDir}": '/app'
+    ports '7080:5000'
+    daemonize false
+    clean true
+    command 'semantic-release', '-b', 'master', '--no-ci'
+    env 'GH_TOKEN': "${System.env.GH_TOKEN}", 'GIT_CREDENTIALS': "${System.env.GIT_CREDENTIALS}"
 }

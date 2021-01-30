@@ -24,22 +24,16 @@ import org.springframework.stereotype.Component;
  * @author Greg Turnquist
  */
 @Component
-public class InitDatabase {
-	@Bean
-	CommandLineRunner init(MongoOperations operations) {
-		return args -> {
-			// tag::log[]
-			operations.dropCollection(Image.class);
+public class TemplateDatabaseLoader {
+    @Bean
+    CommandLineRunner initialize(MongoOperations mongo) {
+        return args -> {
 
-			operations.insert(new Image("1",
-				"learning-spring-boot-cover.jpg", "greg"));
-			operations.insert(new Image("2",
-				"learning-spring-boot-2nd-edition-cover.jpg", "greg"));
-			operations.insert(new Image("3",
-				"bazinga.png", "phil"));
+            mongo.save(new Image("learning-spring-boot-cover.jpg", "greg"));
+            mongo.save(new Image("learning-spring-boot-2nd-edition-cover.jpg", "greg"));
+            mongo.save(new Image("bazinga.png", "phil"));
 
-			operations.findAll(Image.class).forEach(image -> System.out.println(image.toString()));
-			// end::log[]
-		};
-	}
+            mongo.findAll(Image.class).forEach(image -> System.out.println(image.toString()));
+        };
+    }
 }
